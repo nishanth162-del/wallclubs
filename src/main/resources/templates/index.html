@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title=${title}, description=${description})}"></head>
+<body>
+<th:block th:replace="~{layout :: layout(title=${title}, description=${description}, canonical='https://wallclubs.in/', content=~{::content})}">
+    <th:block th:fragment="content">
+        <h1>Welcome to Wallclubs.in</h1>
+        <h2>Smartphone Life Hacks & More</h2>
+        <p>Discover smartphone tips, join our community, and earn with affiliate clubs!</p>
+    </th:block>
+</th:block>
+</body>
+</html>
