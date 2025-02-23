@@ -1,0 +1,38 @@
+<th:block th:replace="~{layout :: layout(title='Wallclubs - Submit Content', description='Share your smartphone tips or forum posts!', canonical='https://wallclubs.in/submit', content=~{::content})}">
+    <th:block th:fragment="content">
+        <h1>Submit Content</h1>
+        <h2>Article</h2>
+        <form method="post" th:action="@{/submit/article}">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="mb-3">
+                <label for="slug" class="form-label">Slug (e.g., my-article)</label>
+                <input type="text" class="form-control" id="slug" name="slug" required>
+            </div>
+            <div class="mb-3">
+                <label for="content" class="form-label">Content</label>
+                <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Article</button>
+        </form>
+        <h2>Forum Post</h2>
+        <form method="post" th:action="@{/submit/post}">
+            <div class="mb-3">
+                <label for="postTitle" class="form-label">Title</label>
+                <input type="text" class="form-control" id="postTitle" name="title" required>
+            </div>
+            <div class="mb-3">
+                <label for="postContent" class="form-label">Content</label>
+                <textarea class="form-control" id="postContent" name="content" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="author" class="form-label">Author</label>
+                <input type="text" class="form-control" id="author" name="author" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Post</button>
+        </form>
+        <a href="/" class="btn btn-secondary mt-3">Back to Home</a>
+    </th:block>
+</th:block>

@@ -18,4 +18,6 @@ public class Article {
     private String title;
     private String slug; // SEO-friendly URL part (e.g., "best-smartphone-hacks")
     private String content;
+    private String category;
+
 }

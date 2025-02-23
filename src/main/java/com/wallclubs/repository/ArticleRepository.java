@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findBySlug(String slug);
+    List<Article> findByCategory(String category);
 }

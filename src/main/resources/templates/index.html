@@ -4,9 +4,28 @@
 <body>
 <th:block th:replace="~{layout :: layout(title=${title}, description=${description}, canonical='https://wallclubs.in/', content=~{::content})}">
     <th:block th:fragment="content">
-        <h1>Welcome to Wallclubs.in</h1>
-        <h2>Smartphone Life Hacks & More</h2>
-        <p>Discover smartphone tips, join our community, and earn with affiliate clubs!</p>
+        <div class="hero mb-4 p-5 text-center" style="background-color: #8185ff; color: #f1c781; border-radius: 10px;">
+            <h1 class="display-4 fw-bold">Tech, Trends & Beyond</h1>
+            <p class="lead">Your daily dose of smartphone hacks, apps, lifestyle tips, and more!</p>
+        </div>
+        <div class="row" th:if="${articles != null and not #lists.isEmpty(articles)}">
+            <div th:each="article : ${articles}" class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h2 class="card-title"><a th:href="@{/articles/{slug}(slug=${article.slug})}" th:text="${article.title}"></a></h2>
+                        <p class="card-text">
+                            <span th:if="${article.content != null and #strings.length(article.content) > 0}"
+                                  th:text="${#strings.substring(article.content, 0, #strings.length(article.content) > 150 ? 150 : #strings.length(article.content))} + '...'"></span>
+                            <span th:unless="${article.content != null and #strings.length(article.content) > 0}">No content</span>
+                        </p>
+                        <small class="text-muted" th:text="${article.category ?: 'Uncategorized'}"></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:if="${articles == null or #lists.isEmpty(articles)}" class="alert alert-info">
+            No articles yet—check back soon!
+        </div>
     </th:block>
 </th:block>
 </body>

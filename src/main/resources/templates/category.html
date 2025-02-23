@@ -1,0 +1,19 @@
+<th:block th:replace="~{layout :: layout(title=${title}, description=${description}, canonical=${canonical}, content=~{::content})}">
+    <th:block th:fragment="content">
+        <h1 th:text="${category}" class="mb-4"></h1>
+        <div class="row" th:if="${articles != null and not #lists.isEmpty(articles)}">
+            <div th:each="article : ${articles}" class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h2 class="card-title"><a th:href="@{/articles/{slug}(slug=${article.slug})}" th:text="${article.title}"></a></h2>
+                        <p class="card-text" th:text="${article.content != null and #strings.length(article.content) > 0 ? #strings.substring(article.content, 0, #strings.length(article.content) > 150 ? 150 : #strings.length(article.content)) + '...' : 'No content'}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:if="${articles == null or #lists.isEmpty(articles)}" class="alert alert-info">
+            No articles in this category yet—check back soon!
+        </div>
+        <a href="/" class="btn btn-primary mt-3">Back to Home</a>
+    </th:block>
+</th:block>
