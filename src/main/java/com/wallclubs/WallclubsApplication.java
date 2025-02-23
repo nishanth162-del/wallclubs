@@ -6,12 +6,10 @@ import com.wallclubs.model.Referral;
 import com.wallclubs.repository.ArticleRepository;
 import com.wallclubs.repository.PostRepository;
 import com.wallclubs.repository.ReferralRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 @SpringBootApplication
@@ -138,20 +135,5 @@ public class WallclubsApplication {
             }
         };
     }
-    @Bean
-    public DataSource dataSource(@Value("${DATABASE_URL}") String databaseUrl) {
-        String[] parts = databaseUrl.replace("postgresql://", "").split("@");
-        String credentials = parts[0];
-        String hostDb = parts[1];
-        String username = credentials.split(":")[0];
-        String password = credentials.split(":")[1];
-        String jdbcUrl = "jdbc:postgresql://" + hostDb;
 
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(jdbcUrl);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        return dataSource;
-    }
 }
