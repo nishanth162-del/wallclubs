@@ -87,7 +87,8 @@ public class WallclubsApplication {
         model.addAttribute("referralCode", code); // Pass to JS for tracking
         return "index"; // Render home with tracking
     }
-
+    
+    //@GetMapping("/track/{code}")
     @PostMapping("/track/{code}")
     @ResponseBody
     public String trackQualifiedVisit(@PathVariable String code) {
@@ -99,6 +100,8 @@ public class WallclubsApplication {
         }
         return "Not found";
     }
+
+
 
     @GetMapping("/club")
     public String club(Model model) {
