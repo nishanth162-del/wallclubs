@@ -1,10 +1,7 @@
 // src/main/java/com/wallclubs/model/Article.java
 package com.wallclubs.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +13,9 @@ public class Article {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    private String slug; // SEO-friendly URL part (e.g., "best-smartphone-hacks")
+    private String slug;
+    // SEO-friendly URL part (e.g., "best-smartphone-hacks")
+    @Column(length = 2000)
     private String content;
     private String category;
 

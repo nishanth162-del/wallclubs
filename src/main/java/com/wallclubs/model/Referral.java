@@ -1,12 +1,9 @@
-// src/main/java/com/wallclubs/model/Referral.java
 package com.wallclubs.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -15,7 +12,13 @@ public class Referral {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String referralCode; // e.g., "user123"
+    private String referralCode;
     private int totalVisits;
-    private int qualifiedVisits; // Visits ≥ 5 mins
+    private int qualifiedVisits;
+    private String lastVisitIp;       // Track IP
+    private LocalDateTime lastVisitTime; // Track time
+    private int points;
+
+    @ManyToOne
+    private User user;// Points instead of cash
 }

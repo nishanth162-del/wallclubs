@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<th:block th:replace="~{layout :: layout(title=${title}, description=${description}, canonical=${canonical}, content=~{::content})}">
+    <th:block th:fragment="content">
+        <h1 class="mb-4">About Wallclubs</h1>
+        <p>Wallclubs is your daily hub for smartphone hacks, tech news from X, and community insights for 30–70+ in India. We deliver neutral, practical tips and affiliate opportunities—updated daily to keep you informed and engaged. Curated by Nishanth & Team.</p>
+        <a href="/" class="btn btn-primary mt-3">Back to Home</a>
+    </th:block>
+</th:block>
+</body>
+</html>

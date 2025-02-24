@@ -26,7 +26,6 @@
         .sidebar { position: sticky; top: 20px; }
         a { text-decoration: none; color: #333; }
         a:hover { color: #007bff; }
-        /* Fade animation */
         .page-content { transition: opacity 0.3s ease-in-out; }
         .fade-out { opacity: 0; }
         .fade-in { opacity: 1; }
@@ -50,6 +49,8 @@
                 <li class="nav-item"><a class="nav-link" href="/forum">Forum</a></li>
                 <li class="nav-item"><a class="nav-link" href="/club">Club</a></li>
                 <li class="nav-item"><a class="nav-link" href="/submit">Submit</a></li>
+                <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="/signup">Sign Up</a></li>
             </ul>
             <div class="dropdown">
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -63,7 +64,7 @@
         </div>
     </div>
 </nav>
-<div class="container mt-4 page-content fade-in">
+<div class="container mt-4 page-content fade-in" th:classappend="${pageType}">
     <div class="row">
         <div class="col-md-8">
             <th:block th:replace="${content}"></th:block>
@@ -106,7 +107,7 @@
                 document.querySelector('.page-content').classList.add('fade-out');
                 setTimeout(function() {
                     window.location.href = href;
-                }, 300); // Match CSS transition duration
+                }, 300);
             });
         });
     });
@@ -115,10 +116,13 @@
         fetch(`/lang/${lang}.json`)
             .then(response => response.json())
             .then(data => {
-                document.querySelector('title').textContent = data.title;
-                document.querySelector('meta[name="description"]').setAttribute('content', data.description);
-                document.querySelector('h1').textContent = data.homeHeader || data.forumHeader || data.clubHeader;
-                document.querySelector('p').textContent = data.homeText || data.clubText;
+                // Only update if on homepage
+                if (document.querySelector('.page-content.homepage')) {
+                    document.querySelector('title').textContent = data.title;
+                    document.querySelector('meta[name="description"]').setAttribute('content', data.description);
+                    document.querySelector('h1').textContent = data.homeHeader;
+                    document.querySelector('p.lead').textContent = data.homeText;
+                }
                 localStorage.setItem('language', lang);
             })
             .catch(error => console.error('Language switch error:', error));
