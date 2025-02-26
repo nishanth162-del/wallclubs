@@ -5,6 +5,7 @@ import com.wallclubs.model.Comment;
 import com.wallclubs.repository.ArticleRepository;
 import com.wallclubs.repository.CommentRepository;
 import org.springframework.stereotype.Controller;
+import org.jsoup.Jsoup;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,8 +32,13 @@ public class ArticleController {
         Article article = articles.get(0);
         article.setViews(article.getViews() + 1);
         articleRepository.save(article);
+
+        // Strip HTML for description
+        String plainContent = Jsoup.parse(article.getContent()).text();
+        String description = plainContent.length() > 150 ? plainContent.substring(0, 150) + "..." : plainContent;
+
         model.addAttribute("title", article.getTitle() + " - Wallclubs");
-        model.addAttribute("description", article.getContent().substring(0, Math.min(150, article.getContent().length())) + "...");
+        model.addAttribute("description", description);
         model.addAttribute("article", article);
         model.addAttribute("canonical", "https://wallclubs.in/articles/" + slug);
         model.addAttribute("pageType", "article");
@@ -94,6 +100,11 @@ public class ArticleController {
         model.addAttribute("title", "Wallclubs - Submit Content");
         model.addAttribute("description", "Share your smartphone tips!");
         model.addAttribute("canonical", "https://wallclubs.in/submit");
+        model.addAttribute("categories", articleRepository.findAll().stream()
+                .map(Article::getCategory)
+                .distinct()
+                .sorted()
+                .toList());
         return "submit";
     }
 

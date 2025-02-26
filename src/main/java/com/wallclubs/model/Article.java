@@ -17,7 +17,7 @@ public class Article {
     private String title;
     private String slug;
     // SEO-friendly URL part (e.g., "best-smartphone-hacks")
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     private String content;
     private String category;
     private String author;

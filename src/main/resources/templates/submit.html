@@ -1,72 +1,163 @@
-<th:block th:replace="~{layout :: layout(title='Wallclubs - Submit Content', description='Share your smartphone tips or forum posts!', canonical='https://wallclubs.in/submit', content=~{::content})}">
+<th:block th:replace="~{layout :: layout(title=${title}, description=${description}, canonical=${canonical}, content=~{::content})}">
     <th:block th:fragment="content">
-        <h1 class="mb-4">Submit Content</h1>
-        <h2 class="mb-3">New Article</h2>
-        <form method="post" th:action="@{/submit/article}" class="p-4 bg-light rounded shadow">
-            <div class="mb-3">
-                <label for="title" class="form-label fw-bold">Title</label>
-                <input type="text" class="form-control" id="title" name="title" required>
+        <div class="submit-container">
+            <div class="d-flex align-items-center mb-4">
+                <h1 class="display-5 mb-0 me-2"><i class="bi bi-pencil-square text-primary me-2"></i>Submit Your Tech Content</h1>
+                <div class="border-bottom flex-grow-1"></div>
             </div>
-            <div class="mb-3">
-                <label for="slug" class="form-label fw-bold">Slug (e.g., my-article)</label>
-                <input type="text" class="form-control" id="slug" name="slug" required>
+            <p class="lead mb-4">Share your smartphone tips, hacks, or news with our growing community!</p>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form th:action="@{/submit/article}" method="post" id="submitForm">
+                        <div class="mb-3">
+                            <label for="title" class="form-label fw-bold">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" required placeholder="Enter a catchy title">
+                        </div>
+                        <div class="mb-3">
+                            <label for="slug" class="form-label fw-bold">Slug (URL-friendly)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">wallclubs.in/articles/</span>
+                                <input type="text" class="form-control" id="slug" name="slug" required placeholder="my-tech-tip">
+                            </div>
+                            <div class="form-text">Use hyphens instead of spaces, e.g., "my-awesome-tech-tip"</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="category" class="form-label fw-bold">Category</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="" selected disabled>Select a category</option>
+                                    <option value="Smartphones">Smartphones</option>
+                                    <option value="Tech Tips">Tech Tips</option>
+                                    <option value="Apps">Apps</option>
+                                    <option value="Current Affairs">Current Affairs</option>
+                                    <option value="Lifestyle">Lifestyle</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="tags" class="form-label fw-bold">Tags (Optional)</label>
+                                <input type="text" class="form-control" id="tags" name="tags" placeholder="tech, tips, smartphone">
+                                <div class="form-text">Separate tags with commas</div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="content" class="form-label fw-bold">Content</label>
+                            <div id="editor-container" class="mb-2">
+                                <div id="editor"></div>
+                            </div>
+                            <input type="hidden" id="content" name="content">
+                            <div class="form-text">Format text or add images with the toolbar—make it engaging!</div>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="reset" class="btn btn-outline-secondary">Clear Form</button>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-send me-2"></i>Submit Article</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="category" class="form-label fw-bold">Category</label>
-                <select class="form-control" id="category" name="category" required>
-                    <option value="Smartphones">Smartphones</option>
-                    <option value="Tech Tips">Tech Tips</option>
-                    <option value="Apps">Apps</option>
-                    <option value="Current Affairs">Current Affairs</option>
-                    <option value="Lifestyle">Lifestyle</option>
-                </select>
+
+            <div class="card bg-light border-0 mb-4">
+                <div class="card-body">
+                    <h3 class="mb-3"><i class="bi bi-lightbulb text-warning me-2"></i>Content Guidelines</h3>
+                    <ul class="mb-0">
+                        <li>Write original, unique content that adds value to our readers</li>
+                        <li>Include practical tips, tutorials, or news that mobile users would find helpful</li>
+                        <li>Keep your content between 500-1500 words for optimal readability</li>
+                        <li>Adding images or screenshots can make your content more engaging</li>
+                        <li>All submissions are reviewed before publication</li>
+                    </ul>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="content" class="form-label fw-bold">Content (min 300 characters)</label>
-                <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
-                <small class="text-muted" id="charCount">0 characters</small>
-            </div>
-            <button type="submit" class="btn btn-primary btn-lg">Publish</button>
-        </form>
-        <h2 class="mb-3 mt-5">New Forum Post</h2>
-        <form method="post" th:action="@{/submit/post}" class="p-4 bg-light rounded shadow">
-            <div class="mb-3">
-                <label for="postTitle" class="form-label fw-bold">Title</label>
-                <input type="text" class="form-control" id="postTitle" name="title" required>
-            </div>
-            <div class="mb-3">
-                <label for="postContent" class="form-label fw-bold">Content</label>
-                <textarea class="form-control" id="postContent" name="content" rows="3" required></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="author" class="form-label fw-bold">Author</label>
-                <input type="text" class="form-control" id="author" name="author" required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-lg">Submit Post</button>
-        </form>
-        <a href="/" class="btn btn-secondary mt-3">Back to Home</a>
+        </div>
     </th:block>
 </th:block>
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <script th:inline="javascript">
-    tinymce.init({
-        selector: '#content',
-        plugins: 'lists link',
-        toolbar: 'undo redo | bold italic | bullist numlist | link',
-        height: 400,
-        content_style: 'body { font-size: 18px; }',
-        setup: function(editor) {
-            editor.on('keyup', function() {
-                var content = editor.getContent({format: 'text'});
-                document.getElementById('charCount').textContent = content.length + ' characters';
-            });
-        }
-    });
-    document.querySelector('form').addEventListener('submit', function(e) {
-        var content = tinymce.get('content').getContent({format: 'text'});
-        if (content.length < 300) {
-            e.preventDefault();
-            alert('Content must be at least 300 characters!');
-        }
+    document.addEventListener("DOMContentLoaded", function() {
+        var quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['link', 'image'],
+                    ['clean']
+                ]
+            },
+            placeholder: 'Write your content here...'
+        });
+
+        // Handle image uploads
+        quill.getModule('toolbar').addHandler('image', function() {
+            var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.click();
+
+            input.onchange = function() {
+                var file = input.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var range = quill.getSelection() || { index: quill.getLength() };
+                        quill.insertEmbed(range.index, 'image', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+        });
+
+        // Auto-generate slug from title
+        document.getElementById('title').addEventListener('input', function() {
+            var title = this.value;
+            var slug = title.toLowerCase()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
+            document.getElementById('slug').value = slug;
+        });
+
+        // Handle form submission
+        var form = document.getElementById('submitForm');
+        form.onsubmit = function() {
+            var content = document.querySelector('input[name=content]');
+            content.value = quill.root.innerHTML;
+
+            if (content.value.length < 50) {
+                alert('Please write more content before submitting.');
+                return false;
+            }
+            return true;
+        };
+
+        // Auto-grow editor height
+        quill.on('text-change', function() {
+            var editor = document.querySelector('.ql-editor');
+            var currentHeight = editor.offsetHeight;
+            var scrollHeight = editor.scrollHeight;
+            if (scrollHeight > currentHeight) {
+                var newHeight = Math.min(scrollHeight, 600);
+                editor.style.height = newHeight + 'px';
+                if (scrollHeight > 600) {
+                    editor.style.overflowY = 'auto';
+                }
+            }
+        });
     });
 </script>
+
+<style>
+    .submit-container { min-height: calc(100vh - 200px); }
+    #editor-container { background-color: white; border-radius: 8px; overflow: hidden; }
+    .ql-toolbar { border-top-left-radius: 8px; border-top-right-radius: 8px; background-color: #f8f9fa; border-color: #ced4da; }
+    .ql-container { border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; border-color: #ced4da; }
+    .ql-editor { min-height: 200px; max-height: 600px; overflow-y: auto; padding: 10px; transition: height 0.2s ease; }
+    .display-5 { color: #e74c3c; font-weight: 700; }
+    .card { border: none; border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+    .btn-primary { background-color: #e74c3c; border-color: #e74c3c; }
+    .btn-primary:hover { background-color: #ff9800; border-color: #ff9800; }
+    .form-control:focus, .form-select:focus { border-color: #e74c3c; box-shadow: 0 0 0 0.25rem rgba(231, 76, 60, 0.25); }
+</style>
