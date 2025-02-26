@@ -1,32 +1,135 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout :: head(title=${title}, description=${description})}"></head>
-<body>
-<th:block th:replace="~{layout :: layout(title=${title}, description=${description}, canonical='https://wallclubs.in/', content=~{::content})}">
+<th:block th:replace="~{layout :: layout(title=${title}, description=${description}, canonical=${canonical}, content=~{::content})}">
     <th:block th:fragment="content">
-        <div class="hero mb-4 p-5 text-center" style="background-color: #8185ff; color: #f1c781; border-radius: 10px;">
-            <h1 class="display-4 fw-bold">Tech, Trends & Beyond</h1>
-            <p class="lead">Your daily dose of smartphone hacks, apps, lifestyle tips, and more!</p>
+        <h1 class="display-4 mb-3">BREAKING TECH NEWS & TIPS</h1>
+        <p class="lead mb-4">Stay ahead with exclusive smartphone hacks, join our growing community, and learn how to earn with our affiliate clubs!</p>
+
+        <div class="ad-container mb-4">
+            <div class="ad-label">SPONSORED</div>
+            <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-4809221527361478" data-ad-slot="YOUR_SLOT_ID"></ins>
         </div>
-        <div class="row" th:if="${articles != null and not #lists.isEmpty(articles)}">
-            <div th:each="article : ${articles}" class="col-md-6 col-lg-4 mb-4">
+
+        <div class="d-flex align-items-center mb-3">
+            <h2 class="mb-0 me-2"><i class="bi bi-fire text-danger"></i> TOP TRENDING</h2>
+            <div class="border-bottom flex-grow-1"></div>
+        </div>
+
+        <div class="row mb-4">
+            <!-- Hardcoded for now—dynamic later -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 position-relative">
+                    <span class="featured-badge">HOT</span>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <span class="trending-tag">Tech</span>
+                            <span class="trending-tag">2025</span>
+                        </div>
+                        <h2 class="card-title"><a href="/articles/tech-trends-2025">Tech Trends Shaping 2025</a></h2>
+                        <p class="card-text">From AI to foldables—here's what's next in tech this year...</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted"><i class="bi bi-calendar3 me-1"></i> Feb 20, 2025</small>
+                            <small class="text-muted"><i class="bi bi-eye me-1"></i> 3.2K views</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h2 class="card-title"><a th:href="@{/articles/{slug}(slug=${article.slug})}" th:text="${article.title}"></a></h2>
-                        <p class="card-text">
-                            <span th:if="${article.content != null and #strings.length(article.content) > 0}"
-                                  th:text="${#strings.substring(article.content, 0, #strings.length(article.content) > 150 ? 150 : #strings.length(article.content))} + '...'"></span>
-                            <span th:unless="${article.content != null and #strings.length(article.content) > 0}">No content</span>
-                        </p>
-                        <small class="text-muted" th:text="${article.category ?: 'Uncategorized'}"></small>
+                        <div class="mb-2">
+                            <span class="trending-tag">Tips</span>
+                            <span class="trending-tag">Mobile</span>
+                        </div>
+                        <h2 class="card-title"><a href="/articles/best-smartphone-hacks">10 Smartphone Hacks You'll Wish You Knew</a></h2>
+                        <p class="card-text">Unlock your phone's potential with these game-changing tips...</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted"><i class="bi bi-calendar3 me-1"></i> Feb 18, 2025</small>
+                            <small class="text-muted"><i class="bi bi-eye me-1"></i> 2.7K views</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <span class="trending-tag">News</span>
+                            <span class="trending-tag">Scandal</span>
+                        </div>
+                        <h2 class="card-title"><a href="/articles/current-tech-scandals">Tech Scandals Shaking Up 2025</a></h2>
+                        <p class="card-text">From data breaches to lawsuits—here's the buzz...</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted"><i class="bi bi-calendar3 me-1"></i> Feb 15, 2025</small>
+                            <small class="text-muted"><i class="bi bi-eye me-1"></i> 1.9K views</small>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div th:if="${articles == null or #lists.isEmpty(articles)}" class="alert alert-info">
-            No articles yet—check back soon!
+
+        <div class="d-flex align-items-center mb-3">
+            <h2 class="mb-0 me-2"><i class="bi bi-newspaper text-primary"></i> LATEST ARTICLES</h2>
+            <div class="border-bottom flex-grow-1"></div>
+        </div>
+
+        <div class="row" th:if="${articles != null and not #lists.isEmpty(articles)}" id="article-grid">
+            <th:block th:each="article, iterStat : ${articles}">
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="card-title">
+                                <a th:href="@{/articles/{slug}(slug=${article.slug})}" th:text="${article.title}"></a>
+                            </h2>
+                            <p class="card-text" th:text="${article.content != null and #strings.length(article.content) > 0 ? #strings.substring(article.content, 0, #strings.length(article.content) > 150 ? 150 : #strings.length(article.content)) + '...' : 'No content'}"></p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted" th:text="'By ' + ${article.author != null ? article.author : 'Staff Writer'}"></small>
+                                <small class="text-muted" th:text="${article.createdAt != null ? #temporals.format(article.createdAt, 'MMM dd, yyyy') : 'Unknown Date'} + ' | ' + ${article.views} + ' views'"></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
         </div>
     </th:block>
 </th:block>
-</body>
-</html>
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        var articles = /*[[${articles}]]*/ [];
+        var grid = document.getElementById('article-grid');
+
+        if (grid) {
+            var children = Array.from(grid.children); // Convert to array for easier manipulation
+            for (var i = 0; i < children.length; i++) {
+                if ((i + 1) % 3 === 0) {
+                    var adDiv = document.createElement('div');
+                    adDiv.className = 'col-md-6 col-lg-4 mb-4 ad-container';
+                    adDiv.id = 'inline-ad-' + (i + 1);
+                    adDiv.innerHTML = `
+                        <div class="ad-label">ADVERTISEMENT</div>
+                        <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-4809221527361478" data-ad-slot="YOUR_SLOT_ID"></ins>
+                    `;
+
+                    // Insert after every third card
+                    if (children[i].nextSibling) {
+                        grid.insertBefore(adDiv, children[i].nextSibling);
+                    } else {
+                        grid.appendChild(adDiv);
+                    }
+
+                    try {
+                        (adsbygoogle = window.adsbygoogle || []).push({
+                            onAdLoaded: function() {
+                                document.getElementById('inline-ad-' + (i + 1)).style.display = 'block';
+                            },
+                            onAdFailed: function() {
+                                adDiv.remove(); // Remove if ad fails to load
+                            }
+                        });
+                    } catch (e) {
+                        adDiv.remove(); // Remove if push fails
+                        console.error('Ad loading error:', e);
+                    }
+                }
+            }
+        }
+    });
+</script>
