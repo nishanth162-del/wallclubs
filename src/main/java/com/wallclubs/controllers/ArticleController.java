@@ -66,10 +66,17 @@ public class ArticleController {
     @GetMapping("/")
     public String home(Model model) {
         List<Article> articles = articleRepository.findAll();
+        // Get top 3 trending articles by views
+        List<Article> trendingArticles = articles.stream()
+                .sorted((a1, a2) -> Integer.compare(a2.getViews(), a1.getViews())) // Descending order
+                .limit(3)
+                .toList();
+
         model.addAttribute("title", "Wallclubs - Smartphone Life Hacks");
         model.addAttribute("description", "Discover smartphone tips, join our community, and earn with affiliate clubs!");
         model.addAttribute("canonical", "https://wallclubs.in/");
-        model.addAttribute("articles", articles);
+        model.addAttribute("articles", articles); // All latest articles
+        model.addAttribute("trendingArticles", trendingArticles); // Top 3 trending
         model.addAttribute("categories", articles.stream()
                 .map(Article::getCategory)
                 .distinct()
@@ -78,7 +85,6 @@ public class ArticleController {
         model.addAttribute("pageType", "homepage");
         return "index";
     }
-
 
 
     @GetMapping("/articles")

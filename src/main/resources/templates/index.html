@@ -13,56 +13,28 @@
             <div class="border-bottom flex-grow-1"></div>
         </div>
 
-        <div class="row mb-4">
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 position-relative">
-                    <span class="featured-badge">HOT</span>
-                    <div class="card-body">
-                        <div class="mb-2">
-                            <span class="trending-tag">Tech</span>
-                            <span class="trending-tag">2025</span>
-                        </div>
-                        <h2 class="card-title"><a href="/articles/tech-trends-2025">Tech Trends Shaping 2025</a></h2>
-                        <p class="card-text">From AI to foldables—here's what's next in tech this year...</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted"><i class="bi bi-calendar3 me-1"></i> Feb 20, 2025</small>
-                            <small class="text-muted"><i class="bi bi-eye me-1"></i> 3.2K views</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <div class="mb-2">
-                            <span class="trending-tag">Tips</span>
-                            <span class="trending-tag">Mobile</span>
-                        </div>
-                        <h2 class="card-title"><a href="/articles/best-smartphone-hacks">10 Smartphone Hacks You'll Wish You Knew</a></h2>
-                        <p class="card-text">Unlock your phone's potential with these game-changing tips...</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted"><i class="bi bi-calendar3 me-1"></i> Feb 18, 2025</small>
-                            <small class="text-muted"><i class="bi bi-eye me-1"></i> 2.7K views</small>
+        <div class="row mb-4" th:if="${trendingArticles != null and not #lists.isEmpty(trendingArticles)}">
+            <th:block th:each="article, stat : ${trendingArticles}">
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 position-relative">
+                        <span class="featured-badge" th:if="${stat.first}">HOT</span>
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <span class="trending-tag" th:text="${article.category}"></span>
+                                <span class="trending-tag">2025</span>
+                            </div>
+                            <h2 class="card-title">
+                                <a th:href="@{/articles/{slug}(slug=${article.slug})}" th:text="${article.title}"></a>
+                            </h2>
+                            <p class="card-text" th:text="${article.description != null ? article.description : 'No content'}"></p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted" th:text="'By ' + ${article.author != null ? article.author : 'Staff Writer'}"></small>
+                                <small class="text-muted" th:text="${article.createdAt != null ? #temporals.format(article.createdAt, 'MMM dd, yyyy') : 'Unknown Date'} + ' | ' + ${article.views} + ' views'"></small>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <div class="mb-2">
-                            <span class="trending-tag">News</span>
-                            <span class="trending-tag">Scandal</span>
-                        </div>
-                        <h2 class="card-title"><a href="/articles/current-tech-scandals">Tech Scandals Shaking Up 2025</a></h2>
-                        <p class="card-text">From data breaches to lawsuits—here's the buzz...</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted"><i class="bi bi-calendar3 me-1"></i> Feb 15, 2025</small>
-                            <small class="text-muted"><i class="bi bi-eye me-1"></i> 1.9K views</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </th:block>
         </div>
 
         <div class="d-flex align-items-center mb-3">
