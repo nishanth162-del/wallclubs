@@ -2,6 +2,8 @@ package com.wallclubs.controllers;
 
 import com.wallclubs.model.User;
 import com.wallclubs.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,7 +41,7 @@ public class UserController {
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setEmail(email);
-        user.setReferralCode(UUID.randomUUID().toString().substring(0, 8)); // Simple unique code
+        user.setReferralCode(UUID.randomUUID().toString().substring(0, 8));
         userRepository.save(user);
         return "redirect:/login";
     }
@@ -50,5 +52,46 @@ public class UserController {
         model.addAttribute("description", "Log in to Wallclubs!");
         model.addAttribute("canonical", "https://wallclubs.in/login");
         return "login";
+    }
+
+    @GetMapping("/profile")
+    public String profile(Model model) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = principal instanceof UserDetails ? ((UserDetails) principal).getUsername() : "Anonymous";
+        User user = userRepository.findByUsername(username);
+        if (user == null) return "redirect:/login";
+
+        // For now, successful referrals are placeholder—implement later with referral tracking
+        long successfulReferrals = 0; // Placeholder—add logic later
+
+        model.addAttribute("title", "Wallclubs - Profile");
+        model.addAttribute("description", "Manage your Wallclubs profile!");
+        model.addAttribute("canonical", "https://wallclubs.in/profile");
+        model.addAttribute("user", user);
+        model.addAttribute("successfulReferrals", successfulReferrals);
+        return "profile";
+    }
+
+    @PostMapping("/profile/change-password")
+    public String changePassword(
+            @RequestParam String currentPassword,
+            @RequestParam String newPassword,
+            @RequestParam String confirmPassword
+    ) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = principal instanceof UserDetails ? ((UserDetails) principal).getUsername() : "Anonymous";
+        User user = userRepository.findByUsername(username);
+        if (user == null) return "redirect:/login";
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            return "redirect:/profile?error=wrong-password";
+        }
+        if (!newPassword.equals(confirmPassword)) {
+            return "redirect:/profile?error=password-mismatch";
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return "redirect:/profile?success=password-changed";
     }
 }

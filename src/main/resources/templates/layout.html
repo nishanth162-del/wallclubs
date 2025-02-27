@@ -58,6 +58,9 @@
         footer a:hover { color: #ffeb3b !important; }
         .list-group-item.active { background-color: #e74c3c; border-left: 4px solid #ff9800; }
         .list-group-item.active a { color: white; }
+        .navbar .d-flex.align-items-center div {display: flex;align-items: center;}
+        .navbar .nav-link.text-white {padding: 0.5rem 0.75rem; /* Match Bootstrap nav-link padding */}
+        .navbar .btn-sm {margin-left: 0.5rem; margin-top: 1rem;/* Space between buttons */}
     </style>
 </head>
 <body>
@@ -75,20 +78,25 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house me-1"></i>Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="/submit"><i class="bi bi-plus-circle me-1"></i>Submit</a></li>
-                <li class="nav-item" th:unless="${#authentication != null and #authentication.authenticated}">
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
                     <a class="nav-link" href="/signup"><i class="bi bi-people me-1"></i>Join the Club</a>
                 </li>
                 <li class="nav-item"><a class="nav-link" href="/about"><i class="bi bi-info-circle me-1"></i>About</a></li>
             </ul>
-            <div class="d-flex">
-                <th:block th:if="${#authentication != null and #authentication.authenticated}">
-                    <span class="nav-link text-white me-2">Welcome, <span th:text="${#authentication.name}"></span></span>
-                    <a href="/logout" class="btn btn-warning btn-sm fw-bold">Logout</a>
-                </th:block>
-                <th:block th:unless="${#authentication != null and #authentication.authenticated}">
+            <div class="d-flex align-items-center">
+                <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
+                    <span class="nav-link text-white me-2">Welcome, <span sec:authentication="name"></span></span>
+                    <a href="/profile" class="nav-link text-white me-2" title="Profile">
+                        <i class="bi bi-person-circle fs-4"></i>
+                    </a>
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-warning btn-sm fw-bold">Logout</button>
+                    </form>
+                </div>
+                <div sec:authorize="!isAuthenticated()" class="d-flex align-items-center">
                     <a href="/login" class="btn btn-warning btn-sm fw-bold me-2">Login</a>
                     <a href="/signup" class="btn btn-outline-warning btn-sm fw-bold">Join the Club</a>
-                </th:block>
+                </div>
             </div>
         </div>
     </div>

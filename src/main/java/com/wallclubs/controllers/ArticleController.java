@@ -7,6 +7,8 @@ import com.wallclubs.repository.CommentRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,7 @@ import java.util.List;
 public class ArticleController {
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
+    private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
 
     public ArticleController(ArticleRepository articleRepository, CommentRepository commentRepository) {
         this.articleRepository = articleRepository;
@@ -79,6 +82,16 @@ public class ArticleController {
                 .sorted((a1, a2) -> Integer.compare(a2.getViews(), a1.getViews()))
                 .limit(3)
                 .toList();
+
+        // Debug authentication state
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails) principal).getUsername();
+            logger.info("User logged in: {}", username);
+        } else {
+            logger.info("No user logged in, principal: {}", principal);
+        }
+
         model.addAttribute("title", "Wallclubs - Smartphone Life Hacks");
         model.addAttribute("description", "Discover smartphone tips, join our community, and earn with affiliate clubs!");
         model.addAttribute("canonical", "https://wallclubs.in/");

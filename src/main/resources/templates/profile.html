@@ -1,0 +1,40 @@
+<th:block th:replace="~{layout :: layout(title=${title}, description=${description}, canonical=${canonical}, content=~{::content})}">
+    <th:block th:fragment="content">
+        <div class="container mt-4">
+            <h1 class="display-4 mb-3">Your Profile</h1>
+            <p class="lead mb-4">Manage your Wallclubs account!</p>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="mb-3">Account Details</h3>
+                    <p><strong>Username:</strong> <span th:text="${user.username}"></span></p>
+                    <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+                    <p><strong>Referral Code:</strong> <span th:text="${user.referralCode}"></span></p>
+                    <p><strong>Successful Referrals:</strong> <span th:text="${successfulReferrals}"></span></p>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="mb-3">Change Password</h3>
+                    <form th:action="@{/profile/change-password}" method="post">
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label fw-bold">Current Password</label>
+                            <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label fw-bold">New Password</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label fw-bold">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </form>
+                    <div th:if="${param.error == 'wrong-password'}" class="text-danger mt-2">Current password is incorrect.</div>
+                    <div th:if="${param.error == 'password-mismatch'}" class="text-danger mt-2">New passwords do not match.</div>
+                    <div th:if="${param.success == 'password-changed'}" class="text-success mt-2">Password changed successfully!</div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</th:block>
