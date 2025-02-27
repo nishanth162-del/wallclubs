@@ -1,0 +1,24 @@
+<th:block th:replace="~{layout :: layout(title=${title}, description=${description}, canonical=${canonical}, content=~{::content})}">
+    <th:block th:fragment="content">
+        <div class="container mt-4">
+            <h1 class="display-4 mb-3">Login</h1>
+            <p class="lead mb-4">Log in to Wallclubs!</p>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form th:action="@{/login}" method="post">
+                        <div class="mb-3">
+                            <label for="username" class="form-label fw-bold">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label fw-bold">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Log In</button>
+                    </form>
+                </div>
+            </div>
+            <p>Need an account? <a href="/signup">Sign up here</a>.</p>
+        </div>
+    </th:block>
+</th:block>

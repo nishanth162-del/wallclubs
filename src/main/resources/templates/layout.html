@@ -75,11 +75,20 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house me-1"></i>Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="/submit"><i class="bi bi-plus-circle me-1"></i>Submit</a></li>
-                <li class="nav-item"><a class="nav-link" href="/signup"><i class="bi bi-person-plus me-1"></i>Sign Up</a></li>
+                <li class="nav-item" th:unless="${#authentication != null and #authentication.authenticated}">
+                    <a class="nav-link" href="/signup"><i class="bi bi-people me-1"></i>Join the Club</a>
+                </li>
                 <li class="nav-item"><a class="nav-link" href="/about"><i class="bi bi-info-circle me-1"></i>About</a></li>
             </ul>
             <div class="d-flex">
-                <a href="/signup" class="btn btn-warning btn-sm fw-bold">JOIN NOW</a>
+                <th:block th:if="${#authentication != null and #authentication.authenticated}">
+                    <span class="nav-link text-white me-2">Welcome, <span th:text="${#authentication.name}"></span></span>
+                    <a href="/logout" class="btn btn-warning btn-sm fw-bold">Logout</a>
+                </th:block>
+                <th:block th:unless="${#authentication != null and #authentication.authenticated}">
+                    <a href="/login" class="btn btn-warning btn-sm fw-bold me-2">Login</a>
+                    <a href="/signup" class="btn btn-outline-warning btn-sm fw-bold">Join the Club</a>
+                </th:block>
             </div>
         </div>
     </div>

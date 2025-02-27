@@ -4,9 +4,8 @@ import com.wallclubs.model.Article;
 import com.wallclubs.model.Comment;
 import com.wallclubs.repository.ArticleRepository;
 import com.wallclubs.repository.CommentRepository;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,14 +48,14 @@ public class ArticleController {
         int currentIndex = allArticles.indexOf(article);
         Article nextArticle = (currentIndex + 1 < allArticles.size()) ? allArticles.get(currentIndex + 1) : null;
         model.addAttribute("nextArticle", nextArticle);
-        model.addAttribute("selectedCategory", article.getCategory());
         model.addAttribute("comments", commentRepository.findByArticleId(article.getId()));
         model.addAttribute("categories", allArticles.stream()
                 .map(Article::getCategory)
                 .distinct()
                 .sorted()
                 .toList());
-        model.addAttribute("trendingArticles", trendingArticles); // Add this
+        model.addAttribute("trendingArticles", trendingArticles);
+        model.addAttribute("selectedCategory", article.getCategory());
         return "article";
     }
 
@@ -73,35 +72,34 @@ public class ArticleController {
         return "redirect:/articles/" + slug;
     }
 
-
-
     @GetMapping("/")
     public String home(Model model) {
         List<Article> articles = articleRepository.findAll();
-        // Get top 3 trending articles by views
         List<Article> trendingArticles = articles.stream()
-                .sorted((a1, a2) -> Integer.compare(a2.getViews(), a1.getViews())) // Descending order
+                .sorted((a1, a2) -> Integer.compare(a2.getViews(), a1.getViews()))
                 .limit(3)
                 .toList();
-
         model.addAttribute("title", "Wallclubs - Smartphone Life Hacks");
         model.addAttribute("description", "Discover smartphone tips, join our community, and earn with affiliate clubs!");
         model.addAttribute("canonical", "https://wallclubs.in/");
-        model.addAttribute("articles", articles); // All latest articles
-        model.addAttribute("trendingArticles", trendingArticles); // Top 3 trending
+        model.addAttribute("articles", articles);
         model.addAttribute("categories", articles.stream()
                 .map(Article::getCategory)
                 .distinct()
                 .sorted()
                 .toList());
+        model.addAttribute("trendingArticles", trendingArticles);
         model.addAttribute("pageType", "homepage");
         return "index";
     }
 
-
     @GetMapping("/articles")
     public String articlesByCategory(@RequestParam(required = false) String category, Model model) {
         List<Article> articles = category != null ? articleRepository.findByCategory(category) : articleRepository.findAll();
+        List<Article> trendingArticles = articles.stream()
+                .sorted((a1, a2) -> Integer.compare(a2.getViews(), a1.getViews()))
+                .limit(3)
+                .toList();
         String pageDescription = articles.isEmpty() ? "No articles available." : articles.get(0).getDescription();
 
         model.addAttribute("title", category != null ? "Wallclubs - " + category : "Wallclubs - All Articles");
@@ -114,20 +112,27 @@ public class ArticleController {
                 .distinct()
                 .sorted()
                 .toList());
+        model.addAttribute("trendingArticles", trendingArticles);
         model.addAttribute("pageType", "articles");
         return "articles";
     }
 
     @GetMapping("/submit")
     public String submitForm(Model model) {
+        List<Article> articles = articleRepository.findAll();
+        List<Article> trendingArticles = articles.stream()
+                .sorted((a1, a2) -> Integer.compare(a2.getViews(), a1.getViews()))
+                .limit(3)
+                .toList();
         model.addAttribute("title", "Wallclubs - Submit Content");
         model.addAttribute("description", "Share your smartphone tips!");
         model.addAttribute("canonical", "https://wallclubs.in/submit");
-        model.addAttribute("categories", articleRepository.findAll().stream()
+        model.addAttribute("categories", articles.stream()
                 .map(Article::getCategory)
                 .distinct()
                 .sorted()
                 .toList());
+        model.addAttribute("trendingArticles", trendingArticles);
         return "submit";
     }
 
@@ -136,7 +141,7 @@ public class ArticleController {
             @RequestParam String title,
             @RequestParam String slug,
             @RequestParam String category,
-            @RequestParam String description, // New field
+            @RequestParam String description,
             @RequestParam String content
     ) {
         if (content.length() < 50) return "redirect:/submit?error=content-too-short";
@@ -145,9 +150,11 @@ public class ArticleController {
         article.setTitle(title);
         article.setSlug(slug);
         article.setCategory(category);
-        article.setDescription(description); // Store plain text directly
+        article.setDescription(description);
         article.setContent(content);
-        article.setAuthor("Nishanth");
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = principal instanceof UserDetails ? ((UserDetails) principal).getUsername() : "Anonymous";
+        article.setAuthor(username);
         article.setCreatedAt(LocalDateTime.now());
         article.setViews(0);
         articleRepository.save(article);
