@@ -35,16 +35,28 @@ public class ArticleController {
         article.setViews(article.getViews() + 1);
         articleRepository.save(article);
 
+        List<Article> allArticles = articleRepository.findAll();
+        List<Article> trendingArticles = allArticles.stream()
+                .sorted((a1, a2) -> Integer.compare(a2.getViews(), a1.getViews()))
+                .limit(3)
+                .toList();
+
         model.addAttribute("title", article.getTitle() + " - Wallclubs");
-        model.addAttribute("description", article.getDescription()); // Use stored description
+        model.addAttribute("description", article.getDescription());
         model.addAttribute("article", article);
         model.addAttribute("canonical", "https://wallclubs.in/articles/" + slug);
         model.addAttribute("pageType", "article");
-        List<Article> allArticles = articleRepository.findAll();
         int currentIndex = allArticles.indexOf(article);
         Article nextArticle = (currentIndex + 1 < allArticles.size()) ? allArticles.get(currentIndex + 1) : null;
         model.addAttribute("nextArticle", nextArticle);
+        model.addAttribute("selectedCategory", article.getCategory());
         model.addAttribute("comments", commentRepository.findByArticleId(article.getId()));
+        model.addAttribute("categories", allArticles.stream()
+                .map(Article::getCategory)
+                .distinct()
+                .sorted()
+                .toList());
+        model.addAttribute("trendingArticles", trendingArticles); // Add this
         return "article";
     }
 
