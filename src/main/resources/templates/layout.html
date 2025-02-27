@@ -32,9 +32,8 @@
         .sidebar {
             position: sticky;
             top: 80px; /* Below navbar—adjust if navbar height changes */
-            height: calc(100vh - 80px); /* Full height minus navbar */
-            overflow-y: auto; /* Scroll within sidebar if needed */
-            padding-bottom: 20px;
+            min-height: 0; /* No forced height—grows with content */
+            padding-bottom: 20px; /* Space at bottom */
         }
         .sidebar .list-group-item { border-left: 4px solid #e74c3c; margin-bottom: 5px; transition: all 0.2s; }
         .sidebar .list-group-item:hover { background-color: #fff9f9; border-left: 4px solid #ff9800; }
