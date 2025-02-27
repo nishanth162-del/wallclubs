@@ -1,17 +1,17 @@
 <th:block th:replace="~{layout :: layout(title=${title}, description=${description}, canonical=${canonical}, content=~{::content})}">
     <th:block th:fragment="content">
         <h1 class="display-4 mb-3" th:text="${selectedCategory != null ? selectedCategory + ' Articles' : 'All Articles'}"></h1>
-        <p class="lead mb-4" th:text="${selectedCategory != null ? 'Explore the latest in ' + selectedCategory + '—tips, trends, and more!' : 'Browse all our latest tech articles!'}"></p>
+        <p class="lead mb-4" th:text="${description}"></p>
 
         <div class="row" th:if="${articles != null and not #lists.isEmpty(articles)}" id="article-grid">
-            <th:block th:each="article, iterStat : ${articles}">
+            <th:block th:each="article : ${articles}">
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card h-100">
                         <div class="card-body">
                             <h2 class="card-title">
                                 <a th:href="@{/articles/{slug}(slug=${article.slug})}" th:text="${article.title}"></a>
                             </h2>
-                            <p class="card-text" th:text="${article.content != null and #strings.length(article.content) > 0 ? #strings.substring(article.content, 0, #strings.length(article.content) > 150 ? 150 : #strings.length(article.content)) + '...' : 'No content'}"></p>
+                            <p class="card-text" th:text="${article.description != null ? article.description : 'No content'}"></p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <small class="text-muted" th:text="'By ' + ${article.author != null ? article.author : 'Staff Writer'}"></small>
                                 <small class="text-muted" th:text="${article.createdAt != null ? #temporals.format(article.createdAt, 'MMM dd, yyyy') : 'Unknown Date'} + ' | ' + ${article.views} + ' views'"></small>

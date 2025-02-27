@@ -1,11 +1,13 @@
-// src/main/java/com/wallclubs/model/Article.java
 package com.wallclubs.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
+import org.jsoup.Jsoup;
 
 @Entity
 @Getter
@@ -16,12 +18,12 @@ public class Article {
     private Long id;
     private String title;
     private String slug;
-    // SEO-friendly URL part (e.g., "best-smartphone-hacks")
     @Column(columnDefinition = "TEXT")
     private String content;
     private String category;
     private String author;
-    private LocalDateTime createdAt;
+    @Column(columnDefinition = "TEXT")
+    private String description; // Add this field
+    private java.time.LocalDateTime createdAt;
     private int views;
-
 }

@@ -4,8 +4,10 @@ import com.wallclubs.model.Article;
 import com.wallclubs.model.Comment;
 import com.wallclubs.repository.ArticleRepository;
 import com.wallclubs.repository.CommentRepository;
-import org.springframework.stereotype.Controller;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,12 +35,8 @@ public class ArticleController {
         article.setViews(article.getViews() + 1);
         articleRepository.save(article);
 
-        // Strip HTML for description
-        String plainContent = Jsoup.parse(article.getContent()).text();
-        String description = plainContent.length() > 150 ? plainContent.substring(0, 150) + "..." : plainContent;
-
         model.addAttribute("title", article.getTitle() + " - Wallclubs");
-        model.addAttribute("description", description);
+        model.addAttribute("description", article.getDescription()); // Use stored description
         model.addAttribute("article", article);
         model.addAttribute("canonical", "https://wallclubs.in/articles/" + slug);
         model.addAttribute("pageType", "article");
@@ -63,13 +61,16 @@ public class ArticleController {
         return "redirect:/articles/" + slug;
     }
 
+
+
     @GetMapping("/")
     public String home(Model model) {
+        List<Article> articles = articleRepository.findAll();
         model.addAttribute("title", "Wallclubs - Smartphone Life Hacks");
         model.addAttribute("description", "Discover smartphone tips, join our community, and earn with affiliate clubs!");
         model.addAttribute("canonical", "https://wallclubs.in/");
-        model.addAttribute("articles", articleRepository.findAll());
-        model.addAttribute("categories", articleRepository.findAll().stream()
+        model.addAttribute("articles", articles);
+        model.addAttribute("categories", articles.stream()
                 .map(Article::getCategory)
                 .distinct()
                 .sorted()
@@ -78,15 +79,19 @@ public class ArticleController {
         return "index";
     }
 
+
+
     @GetMapping("/articles")
     public String articlesByCategory(@RequestParam(required = false) String category, Model model) {
         List<Article> articles = category != null ? articleRepository.findByCategory(category) : articleRepository.findAll();
+        String pageDescription = articles.isEmpty() ? "No articles available." : articles.get(0).getDescription();
+
         model.addAttribute("title", category != null ? "Wallclubs - " + category : "Wallclubs - All Articles");
-        model.addAttribute("description", category != null ? "Explore the latest in " + category.toLowerCase() + "—tips, trends, and more!" : "Browse all our latest tech articles!");
+        model.addAttribute("description", pageDescription);
         model.addAttribute("canonical", category != null ? "https://wallclubs.in/articles?category=" + category : "https://wallclubs.in/articles");
         model.addAttribute("articles", articles);
         model.addAttribute("selectedCategory", category);
-        model.addAttribute("categories", articleRepository.findAll().stream()
+        model.addAttribute("categories", articles.stream()
                 .map(Article::getCategory)
                 .distinct()
                 .sorted()
@@ -109,12 +114,20 @@ public class ArticleController {
     }
 
     @PostMapping("/submit/article")
-    public String submitArticle(@RequestParam String title, @RequestParam String slug, @RequestParam String category, @RequestParam String content) {
-        if (content.length() < 300) return "redirect:/submit?error=content-too-short";
+    public String submitArticle(
+            @RequestParam String title,
+            @RequestParam String slug,
+            @RequestParam String category,
+            @RequestParam String description, // New field
+            @RequestParam String content
+    ) {
+        if (content.length() < 50) return "redirect:/submit?error=content-too-short";
+        if (description.length() > 150) return "redirect:/submit?error=description-too-long";
         Article article = new Article();
         article.setTitle(title);
         article.setSlug(slug);
         article.setCategory(category);
+        article.setDescription(description); // Store plain text directly
         article.setContent(content);
         article.setAuthor("Nishanth");
         article.setCreatedAt(LocalDateTime.now());

@@ -40,6 +40,11 @@
                                 <div class="form-text">Separate tags with commas</div>
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label fw-bold">Description (max 150 characters)</label>
+                            <input type="text" class="form-control" id="description" name="description" maxlength="150" required placeholder="Short summary of your article">
+                            <div class="form-text">Keep it concise—150 characters max—appears as preview text.</div>
+                        </div>
                         <div class="mb-4">
                             <label for="content" class="form-label fw-bold">Content</label>
                             <div id="editor-container" class="mb-2">
@@ -90,7 +95,6 @@
             placeholder: 'Write your content here...'
         });
 
-        // Handle image uploads
         quill.getModule('toolbar').addHandler('image', function() {
             var input = document.createElement('input');
             input.setAttribute('type', 'file');
@@ -110,7 +114,6 @@
             };
         });
 
-        // Auto-generate slug from title
         document.getElementById('title').addEventListener('input', function() {
             var title = this.value;
             var slug = title.toLowerCase()
@@ -120,7 +123,6 @@
             document.getElementById('slug').value = slug;
         });
 
-        // Handle form submission
         var form = document.getElementById('submitForm');
         form.onsubmit = function() {
             var content = document.querySelector('input[name=content]');
@@ -133,7 +135,6 @@
             return true;
         };
 
-        // Auto-grow editor height
         quill.on('text-change', function() {
             var editor = document.querySelector('.ql-editor');
             var currentHeight = editor.offsetHeight;
