@@ -26,4 +26,7 @@ public class Article {
     private String description; // Add this field
     private java.time.LocalDateTime createdAt;
     private int views;
+    private String status = "pending"; // "pending", "approved", "rejected"
+    @Column(columnDefinition = "TEXT")
+    private String rejectionReason;
 }

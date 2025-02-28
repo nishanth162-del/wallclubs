@@ -1,16 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 <th:block th:replace="~{layout :: layout(title=${title}, description=${description}, canonical=${canonical}, content=~{::content})}">
     <th:block th:fragment="content">
-        <h1 class="mb-4">About Wallclubs</h1>
-        <p>Wallclubs is your daily hub for smartphone hacks, tech news from X, and community insights for 30–70+ in India. We deliver neutral, practical tips and affiliate opportunities—updated daily to keep you informed and engaged. Curated by Nishanth & Team.</p>
-        <a href="/" class="btn btn-primary mt-3">Back to Home</a>
+        <div class="container mt-4">
+            <h1 class="display-4 mb-3">About Wallclubs</h1>
+            <p class="lead mb-4">Your Tech Hub for Smartphone Hacks, Community, and Rewards!</p>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="mb-3">Our Mission</h2>
+                    <p>Wallclubs is here to unlock your smartphone’s full potential while building a vibrant community of tech enthusiasts. We’re all about sharing knowledge, connecting people, and rewarding your contributions—making tech fun, accessible, and profitable!</p>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="mb-3">What We Do</h2>
+                    <ul>
+                        <li><strong>Smartphone Hacks & Tips</strong>: Share and discover quality articles—approved by our team for maximum value.</li>
+                        <li><strong>Community Connection</strong>: Join a growing network—submit content, comment, and engage.</li>
+                        <li><strong>Affiliate Earnings</strong>: Learn how to turn your tech passion into rewards with our affiliate opportunities.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="mb-3">Why Join Us?</h2>
+                    <p>At Wallclubs, you’re a creator shaping our community. Here’s why:</p>
+                    <ul>
+                        <li><strong>Share Your Expertise</strong>: Submit articles—approved content goes live, showcasing your skills.</li>
+                        <li><strong>Get Involved</strong>: Access exclusive features—profile customization, rewards coming soon!</li>
+                        <li><strong>Grow Together</strong>: Invite friends, earn perks, and build the ultimate tech hub.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="mb-3">Our Future Plans</h2>
+                    <p>We’re just starting—here’s what’s ahead:</p>
+                    <ul>
+                        <li><strong>Reward System</strong>: Earn points for approved contributions—articles, comments, referrals.</li>
+                        <li><strong>Leaderboards</strong>: See top contributors—bragging rights await!</li>
+                        <li><strong>More Features</strong>: Tools to share, learn, and earn—watch us grow into the top tech community.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="mb-3">How It Works</h2>
+                    <p>We keep Wallclubs high-quality and user-friendly:</p>
+                    <ul>
+                        <li><strong>Submit Content</strong>: Share your article—it’s reviewed by our admins for quality.</li>
+                        <li><strong>Approval</strong>: Approved articles go live—rejected ones get feedback via email.</li>
+                        <li><strong>Terms & Conditions</strong>: Check our <a href="/terms">T&Cs</a>—we maintain standards while empowering you.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mb-4">
+                <p>Ready to join? <a href="/signup" class="btn btn-warning fw-bold">Sign Up Now</a>—start sharing and shaping Wallclubs!</p>
+            </div>
+        </div>
     </th:block>
 </th:block>
-</body>
-</html>

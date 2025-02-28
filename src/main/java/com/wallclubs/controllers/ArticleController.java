@@ -17,12 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class ArticleController {
+    private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
-    private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
 
     public ArticleController(ArticleRepository articleRepository, CommentRepository commentRepository) {
         this.articleRepository = articleRepository;
@@ -34,10 +35,27 @@ public class ArticleController {
         List<Article> articles = articleRepository.findBySlug(slug);
         if (articles.isEmpty()) return "404";
         Article article = articles.get(0);
+
+        // Check if user is admin
+        boolean isAdmin = false;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) principal;
+            isAdmin = userDetails.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        }
+
+        // Restrict access: only approved/null for non-admins, all for admins
+        if (!isAdmin && (!"approved".equals(article.getStatus()) && article.getStatus() != null)) {
+            return "404";
+        }
+
         article.setViews(article.getViews() + 1);
         articleRepository.save(article);
 
-        List<Article> allArticles = articleRepository.findAll();
+        List<Article> allArticles = articleRepository.findAll().stream()
+                .filter(a -> "approved".equals(a.getStatus()) || a.getStatus() == null)
+                .collect(Collectors.toList());
         List<Article> trendingArticles = allArticles.stream()
                 .sorted((a1, a2) -> Integer.compare(a2.getViews(), a1.getViews()))
                 .limit(3)
@@ -65,7 +83,7 @@ public class ArticleController {
     @PostMapping("/articles/{slug}/comment")
     public String addComment(@PathVariable String slug, @RequestParam String author, @RequestParam String text) {
         List<Article> articles = articleRepository.findBySlug(slug);
-        if (articles.isEmpty()) return "404";
+        if (articles.isEmpty() || (!"approved".equals(articles.get(0).getStatus()) && articles.get(0).getStatus() != null)) return "404";
         Article article = articles.get(0);
         Comment comment = new Comment();
         comment.setArticleId(article.getId());
@@ -77,13 +95,14 @@ public class ArticleController {
 
     @GetMapping("/")
     public String home(Model model) {
-        List<Article> articles = articleRepository.findAll();
+        List<Article> articles = articleRepository.findAll().stream()
+                .filter(a -> "approved".equals(a.getStatus()) || a.getStatus() == null)
+                .collect(Collectors.toList());
         List<Article> trendingArticles = articles.stream()
                 .sorted((a1, a2) -> Integer.compare(a2.getViews(), a1.getViews()))
                 .limit(3)
                 .toList();
 
-        // Debug authentication state
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
             String username = ((UserDetails) principal).getUsername();
@@ -108,7 +127,13 @@ public class ArticleController {
 
     @GetMapping("/articles")
     public String articlesByCategory(@RequestParam(required = false) String category, Model model) {
-        List<Article> articles = category != null ? articleRepository.findByCategory(category) : articleRepository.findAll();
+        List<Article> articles = category != null ?
+                articleRepository.findByCategory(category).stream()
+                        .filter(a -> "approved".equals(a.getStatus()) || a.getStatus() == null)
+                        .collect(Collectors.toList()) :
+                articleRepository.findAll().stream()
+                        .filter(a -> "approved".equals(a.getStatus()) || a.getStatus() == null)
+                        .collect(Collectors.toList());
         List<Article> trendingArticles = articles.stream()
                 .sorted((a1, a2) -> Integer.compare(a2.getViews(), a1.getViews()))
                 .limit(3)
@@ -132,7 +157,9 @@ public class ArticleController {
 
     @GetMapping("/submit")
     public String submitForm(Model model) {
-        List<Article> articles = articleRepository.findAll();
+        List<Article> articles = articleRepository.findAll().stream()
+                .filter(a -> "approved".equals(a.getStatus()) || a.getStatus() == null)
+                .collect(Collectors.toList());
         List<Article> trendingArticles = articles.stream()
                 .sorted((a1, a2) -> Integer.compare(a2.getViews(), a1.getViews()))
                 .limit(3)
@@ -170,7 +197,8 @@ public class ArticleController {
         article.setAuthor(username);
         article.setCreatedAt(LocalDateTime.now());
         article.setViews(0);
+        article.setStatus("pending");
         articleRepository.save(article);
-        return "redirect:/articles/" + slug;
+        return "redirect:/submit?success=submitted-awaiting-approval";
     }
 }

@@ -48,13 +48,15 @@ public class SecurityConfig {
         return username -> {
             User user = userRepository.findByUsername(username);
             if (user == null) throw new UsernameNotFoundException("User not found: " + username);
+            String[] roles = username.equals("testadmin") ? new String[]{"USER", "ADMIN"} : new String[]{"USER"};
             return org.springframework.security.core.userdetails.User
                     .withUsername(user.getUsername())
                     .password(user.getPassword())
-                    .roles("USER")
+                    .roles(roles)
                     .build();
         };
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

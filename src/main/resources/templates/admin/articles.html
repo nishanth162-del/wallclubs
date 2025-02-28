@@ -1,0 +1,41 @@
+<th:block th:replace="~{layout :: layout(title='Wallclubs - Admin Articles', description='Admin review panel', canonical='https://wallclubs.in/admin/articles', content=~{::content})}">
+    <th:block th:fragment="content">
+        <div class="container mt-4">
+            <h1 class="display-4 mb-3">Admin - Review Articles</h1>
+            <p class="lead mb-4">Approve or reject pending submissions.</p>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="mb-3">Pending Articles</h2>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Category</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="article : ${pendingArticles}">
+                            <td><a th:href="@{/articles/{slug}(slug=${article.slug})}" th:text="${article.title}"></a></td>
+                            <td th:text="${article.author}"></td>
+                            <td th:text="${article.category}"></td>
+                            <td>
+                                <form th:action="@{/admin/approve}" method="post" class="d-inline">
+                                    <input type="hidden" name="articleId" th:value="${article.id}">
+                                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                </form>
+                                <form th:action="@{/admin/reject}" method="post" class="d-inline">
+                                    <input type="hidden" name="articleId" th:value="${article.id}">
+                                    <input type="text" name="rejectionReason" placeholder="Reason for rejection" required class="form-control d-inline-block w-auto">
+                                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</th:block>
