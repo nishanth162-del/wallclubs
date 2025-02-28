@@ -15,4 +15,12 @@ public class StaticController {
         model.addAttribute("pageType", "about");
         return "about";
     }
+    @GetMapping("/terms")
+    public String terms(Model model) {
+        model.addAttribute("title", "Wallclubs - Terms and Conditions");
+        model.addAttribute("description", "Learn about Wallclubs Terms and Conditions");
+        model.addAttribute("canonical", "https://wallclubs.in/terms");
+        model.addAttribute("pageType", "terms");
+        return "terms";
+    }
 }
