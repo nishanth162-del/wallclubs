@@ -2,8 +2,8 @@
     <th:block th:fragment="content">
         <div class="container mt-4">
             <h1 th:text="${article.title}" class="mb-3"></h1>
-            <p class="lead mb-2" th:utext="${article.description}"></p>
-            <p class="text-muted">By <span th:text="${article.author}"></span> | <span th:text="${article.createdAt}"></span> | <span th:text="${article.views}"></span> views</p>
+        <!--    <p class="lead mb-2" th:utext="${article.description}"></p>-->
+            <p class="text-muted">By <span th:text="${article.author}"></span><!-- | <span th:text="${article.createdAt}"></span> | <span th:text="${article.views}"></span> views--></p>
             <div th:utext="${article.content}" class="mb-4"></div>
             <div th:if="${nextArticle != null}" class="mb-4">
                 <h3>Next Article</h3>
