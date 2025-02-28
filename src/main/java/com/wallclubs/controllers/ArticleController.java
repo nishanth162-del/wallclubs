@@ -2,8 +2,12 @@ package com.wallclubs.controllers;
 
 import com.wallclubs.model.Article;
 import com.wallclubs.model.Comment;
+import com.wallclubs.model.CommentPointLog;
+import com.wallclubs.model.User;
 import com.wallclubs.repository.ArticleRepository;
 import com.wallclubs.repository.CommentRepository;
+import com.wallclubs.repository.CommentPointLogRepository;
+import com.wallclubs.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,10 +29,15 @@ public class ArticleController {
     private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
+    private final CommentPointLogRepository commentPointLogRepository;
+    private final UserRepository userRepository;
 
-    public ArticleController(ArticleRepository articleRepository, CommentRepository commentRepository) {
+    public ArticleController(ArticleRepository articleRepository, CommentRepository commentRepository,
+                             CommentPointLogRepository commentPointLogRepository, UserRepository userRepository) {
         this.articleRepository = articleRepository;
         this.commentRepository = commentRepository;
+        this.commentPointLogRepository = commentPointLogRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/articles/{slug}")
@@ -36,7 +46,6 @@ public class ArticleController {
         if (articles.isEmpty()) return "404";
         Article article = articles.get(0);
 
-        // Check if user is admin
         boolean isAdmin = false;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
@@ -45,7 +54,6 @@ public class ArticleController {
                     .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
         }
 
-        // Restrict access: only approved/null for non-admins, all for admins
         if (!isAdmin && (!"approved".equals(article.getStatus()) && article.getStatus() != null)) {
             return "404";
         }
@@ -81,15 +89,42 @@ public class ArticleController {
     }
 
     @PostMapping("/articles/{slug}/comment")
-    public String addComment(@PathVariable String slug, @RequestParam String author, @RequestParam String text) {
+    public String addComment(@PathVariable String slug, @RequestParam String text) {
         List<Article> articles = articleRepository.findBySlug(slug);
         if (articles.isEmpty() || (!"approved".equals(articles.get(0).getStatus()) && articles.get(0).getStatus() != null)) return "404";
         Article article = articles.get(0);
+
+        // Get author from authenticated user
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String author = principal instanceof UserDetails ? ((UserDetails) principal).getUsername() : "Anonymous";
+
+        // Save comment regardless of points
         Comment comment = new Comment();
         comment.setArticleId(article.getId());
         comment.setAuthor(author);
         comment.setText(text);
         commentRepository.save(comment);
+
+        // Award 2 points per comment, cap at 10/day
+        User user = userRepository.findByUsername(author);
+        if (user != null) {
+            LocalDate today = LocalDate.now();
+            CommentPointLog log = commentPointLogRepository.findByUsernameAndDate(author, today)
+                    .orElse(new CommentPointLog());
+            if (log.getId() == null) {
+                log.setUsername(author);
+                log.setDate(today);
+                log.setPointsEarned(0);
+            }
+            if (log.getPointsEarned() < 10) {
+                int pointsToAdd = Math.min(2, 10 - log.getPointsEarned()); // Max 10/day
+                user.setPoints(user.getPoints() + pointsToAdd);
+                log.setPointsEarned(log.getPointsEarned() + pointsToAdd);
+                userRepository.save(user);
+                commentPointLogRepository.save(log);
+            }
+        }
+
         return "redirect:/articles/" + slug;
     }
 

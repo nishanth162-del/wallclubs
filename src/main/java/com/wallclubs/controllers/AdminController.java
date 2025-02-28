@@ -40,6 +40,14 @@ public class AdminController {
         Article article = articleRepository.findById(articleId).orElseThrow();
         article.setStatus("approved");
         articleRepository.save(article);
+
+        User user = userRepository.findByUsername(article.getAuthor());
+        if (user != null) {
+            int currentPoints = user.getPoints() != null ? user.getPoints() : 0; // Handle null
+            user.setPoints(currentPoints + 10);
+            userRepository.save(user);
+        }
+
         return "redirect:/admin/articles";
     }
 
@@ -53,15 +61,18 @@ public class AdminController {
         article.setRejectionReason(rejectionReason);
         articleRepository.save(article);
 
-      /*  User user = userRepository.findByUsername(article.getAuthor());
+        // Email still disabled—add later
+        /*
+        User user = userRepository.findByUsername(article.getAuthor());
         if (user != null && user.getEmail() != null) {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(user.getEmail());
             message.setSubject("Wallclubs Article Submission Rejected");
-            message.setText("Your article '" + article.getTitle() + "' was rejected for the following reason: " + rejectionReason +
-                    "\n\nReview our Terms & Conditions at https://wallclubs.in/terms for submission guidelines.");
+            message.setText("Your article '" + article.getTitle() + "' was rejected for: " + rejectionReason +
+                            "\n\nReview our Terms & Conditions at https://wallclubs.in/terms.");
             mailSender.send(message);
-        }*/
+        }
+        */
 
         return "redirect:/admin/articles";
     }

@@ -1,26 +1,33 @@
 <th:block th:replace="~{layout :: layout(title=${title}, description=${description}, canonical=${canonical}, content=~{::content})}">
     <th:block th:fragment="content">
-        <h1 class="display-4 mb-3" th:text="${article.title}"></h1>
-        <div class="mb-5 article-content" th:utext="${article.content}"></div>
-        <!-- Comments Section -->
-        <h2 class="mb-3">Comments</h2>
-        <form th:action="@{/articles/{slug}/comment(slug=${article.slug})}" method="post" class="mb-4">
-            <div class="mb-3">
-                <label for="author" class="form-label">Your Name</label>
-                <input type="text" class="form-control" id="author" name="author" required>
+        <div class="container mt-4">
+            <h1 th:text="${article.title}" class="mb-3"></h1>
+            <p class="lead mb-2" th:utext="${article.description}"></p>
+            <p class="text-muted">By <span th:text="${article.author}"></span> | <span th:text="${article.createdAt}"></span> | <span th:text="${article.views}"></span> views</p>
+            <div th:utext="${article.content}" class="mb-4"></div>
+            <div th:if="${nextArticle != null}" class="mb-4">
+                <h3>Next Article</h3>
+                <a th:href="@{/articles/{slug}(slug=${nextArticle.slug})}" th:text="${nextArticle.title}"></a>
             </div>
-            <div class="mb-3">
-                <label for="text" class="form-label">Add Comment</label>
-                <textarea class="form-control" id="text" name="text" rows="3" required></textarea>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="mb-3">Comments</h3>
+                    <ul class="list-group mb-3">
+                        <th:block th:each="comment : ${comments}">
+                            <li class="list-group-item">
+                                <strong th:text="${comment.author}"></strong>: <span th:text="${comment.text}"></span>
+                            </li>
+                        </th:block>
+                    </ul>
+                    <form th:action="@{/articles/{slug}/comment(slug=${article.slug})}" method="post">
+                        <div class="mb-3">
+                            <label for="text" class="form-label fw-bold">Add a Comment</label>
+                            <textarea class="form-control" id="text" name="text" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Comment</button>
+                    </form>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-        <div th:each="comment : ${comments}">
-            <p><strong th:text="${comment.author}"></strong>: <span th:text="${comment.text}"></span></p>
-        </div>
-        <div th:if="${nextArticle != null}" class="next-article mt-5">
-            <h3 class="fw-bold">Read Next</h3>
-            <p><a th:href="@{/articles/{slug}(slug=${nextArticle.slug})}" th:text="${nextArticle.title}" class="text-dark fs-4"><i class="bi bi-arrow-right ms-2"></i></a></p>
         </div>
     </th:block>
 </th:block>

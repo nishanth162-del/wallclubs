@@ -42,6 +42,7 @@ public class UserController {
         user.setPassword(passwordEncoder.encode(password));
         user.setEmail(email);
         user.setReferralCode(UUID.randomUUID().toString().substring(0, 8));
+        user.setPoints(0); // Initialize points
         userRepository.save(user);
         return "redirect:/login";
     }
@@ -61,14 +62,11 @@ public class UserController {
         User user = userRepository.findByUsername(username);
         if (user == null) return "redirect:/login";
 
-        // For now, successful referrals are placeholder—implement later with referral tracking
-        long successfulReferrals = 0; // Placeholder—add logic later
-
         model.addAttribute("title", "Wallclubs - Profile");
         model.addAttribute("description", "Manage your Wallclubs profile!");
         model.addAttribute("canonical", "https://wallclubs.in/profile");
         model.addAttribute("user", user);
-        model.addAttribute("successfulReferrals", successfulReferrals);
+        model.addAttribute("successfulReferrals", 0); // Placeholder—add later
         return "profile";
     }
 
