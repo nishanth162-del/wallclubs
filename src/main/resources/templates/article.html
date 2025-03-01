@@ -1,9 +1,21 @@
 <th:block th:replace="~{layout :: layout(title=${title}, description=${description}, canonical=${canonical}, content=~{::content})}">
     <th:block th:fragment="content">
         <div class="container mt-4">
+            <div class="ad-container">
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '9173d27d138f1232811bfb1c32fd0331',
+                        'format' : 'iframe',
+                        'height' : 250,
+                        'width' : 300,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="//processesdisplease.com/9173d27d138f1232811bfb1c32fd0331/invoke.js"></script>
+            </div>
             <h1 th:text="${article.title}" class="mb-3"></h1>
-            <!--    <p class="lead mb-2" th:utext="${article.description}"></p>-->
-            <p class="text-muted">By <span th:text="${article.author}"></span><!-- | <span th:text="${article.createdAt}"></span> | <span th:text="${article.views}"></span> views--></p>
+            <p class="lead mb-2" th:utext="${article.description}"></p>
+            <p class="text-muted">By <span th:text="${article.author}"></span> | <span th:text="${article.createdAt}"></span> | <span th:text="${article.views}"></span> views</p>
             <div th:utext="${article.content}" class="mb-4"></div>
             <div th:if="${nextArticle != null}" class="mb-4">
                 <h3>Next Article</h3>
@@ -24,10 +36,20 @@
                             <label for="text" class="form-label fw-bold">Add a Comment</label>
                             <textarea class="form-control" id="text" name="text" rows="3" required></textarea>
                         </div>
+                        <input type="hidden" id="isAdBlocked" name="isAdBlocked" value="false" />
                         <button type="submit" class="btn btn-primary">Submit Comment</button>
                     </form>
+                    <div class="ad-container mt-4">
+                        <script async="async" data-cfasync="false" src="//processesdisplease.com/25e0e6c9969c5a14ce21f0e0698eeed4/invoke.js"></script>
+                        <div id="container-25e0e6c9969c5a14ce21f0e0698eeed4"></div>
+                    </div>
                 </div>
             </div>
         </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                document.getElementById('isAdBlocked').value = window.isAdBlocked || false;
+            });
+        </script>
     </th:block>
 </th:block>

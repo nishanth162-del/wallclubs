@@ -89,39 +89,38 @@ public class ArticleController {
     }
 
     @PostMapping("/articles/{slug}/comment")
-    public String addComment(@PathVariable String slug, @RequestParam String text) {
+    public String addComment(@PathVariable String slug, @RequestParam String text, @RequestParam(defaultValue = "false") boolean isAdBlocked) {
         List<Article> articles = articleRepository.findBySlug(slug);
         if (articles.isEmpty() || (!"approved".equals(articles.get(0).getStatus()) && articles.get(0).getStatus() != null)) return "404";
         Article article = articles.get(0);
 
-        // Get author from authenticated user
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String author = principal instanceof UserDetails ? ((UserDetails) principal).getUsername() : "Anonymous";
 
-        // Save comment regardless of points
         Comment comment = new Comment();
         comment.setArticleId(article.getId());
         comment.setAuthor(author);
         comment.setText(text);
         commentRepository.save(comment);
 
-        // Award 2 points per comment, cap at 10/day
-        User user = userRepository.findByUsername(author);
-        if (user != null) {
-            LocalDate today = LocalDate.now();
-            CommentPointLog log = commentPointLogRepository.findByUsernameAndDate(author, today)
-                    .orElse(new CommentPointLog());
-            if (log.getId() == null) {
-                log.setUsername(author);
-                log.setDate(today);
-                log.setPointsEarned(0);
-            }
-            if (log.getPointsEarned() < 10) {
-                int pointsToAdd = Math.min(2, 10 - log.getPointsEarned()); // Max 10/day
-                user.setPoints(user.getPoints() + pointsToAdd);
-                log.setPointsEarned(log.getPointsEarned() + pointsToAdd);
-                userRepository.save(user);
-                commentPointLogRepository.save(log);
+        if (!isAdBlocked) { // Only award points if ads not blocked
+            User user = userRepository.findByUsername(author);
+            if (user != null) {
+                LocalDate today = LocalDate.now();
+                CommentPointLog log = commentPointLogRepository.findByUsernameAndDate(author, today)
+                        .orElse(new CommentPointLog());
+                if (log.getId() == null) {
+                    log.setUsername(author);
+                    log.setDate(today);
+                    log.setPointsEarned(0);
+                }
+                if (log.getPointsEarned() < 10) {
+                    int pointsToAdd = Math.min(2, 10 - log.getPointsEarned());
+                    user.setPoints(user.getPoints() + pointsToAdd);
+                    log.setPointsEarned(log.getPointsEarned() + pointsToAdd);
+                    userRepository.save(user);
+                    commentPointLogRepository.save(log);
+                }
             }
         }
 
