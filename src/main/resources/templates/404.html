@@ -1,16 +1,9 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>404 - Wallclubs</title>
-</head>
-<body>
-<th:block th:replace="~{layout :: layout(title='404 - Wallclubs.in', description='Page not found', canonical='https://wallclubs.in/404', content=~{::content})}">
+<th:block th:replace="~{layout :: layout(title='Wallclubs - Page Not Found', description='Oops! Page not found.', canonical='https://wallclubs.in/404', content=~{::content})}">
     <th:block th:fragment="content">
-        <h1>Page Not Found</h1>
-        <p>Sorry, we couldn’t find that page.</p>
-        <a href="/" class="btn btn-primary">Back to Home</a>
+        <div class="container mt-4 text-center">
+            <h1 class="display-4 mb-3">404 - Page Not Found</h1>
+            <p class="lead mb-4">Oops! Looks like this page doesn’t exist—or maybe it’s hiding in a tech glitch!</p>
+            <p><a href="/" class="btn btn-warning fw-bold">Back to Home</a></p>
+        </div>
     </th:block>
 </th:block>
-</body>
-</html>
