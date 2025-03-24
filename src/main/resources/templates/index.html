@@ -3,11 +3,6 @@
         <h1 class="display-4 mb-3">BREAKING TECH NEWS & TIPS</h1>
         <p class="lead mb-4">Stay ahead with exclusive smartphone hacks, join our growing community, and learn how to earn with our affiliate clubs!</p>
 
-        <div class="ad-container mb-4">
-            <div class="ad-label">SPONSORED</div>
-            <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-4809221527361478" data-ad-slot="YOUR_SLOT_ID"></ins>
-        </div>
-
         <div class="d-flex align-items-center mb-3">
             <h2 class="mb-0 me-2"><i class="bi bi-fire text-danger"></i> TOP TRENDING</h2>
             <div class="border-bottom flex-grow-1"></div>
@@ -62,42 +57,3 @@
         </div>
     </th:block>
 </th:block>
-<script th:inline="javascript">
-    document.addEventListener("DOMContentLoaded", function() {
-        var articles = /*[[${articles}]]*/ [];
-        var grid = document.getElementById('article-grid');
-
-        if (grid) {
-            var children = Array.from(grid.children);
-            for (var i = 0; i < children.length; i++) {
-                if ((i + 1) % 3 === 0) {
-                    var adDiv = document.createElement('div');
-                    adDiv.className = 'col-md-6 col-lg-4 mb-4 ad-container';
-                    adDiv.id = 'inline-ad-' + (i + 1);
-                    adDiv.innerHTML = `
-                        <div class="ad-label">ADVERTISEMENT</div>
-                        <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-4809221527361478" data-ad-slot="YOUR_SLOT_ID"></ins>
-                    `;
-                    if (children[i].nextSibling) {
-                        grid.insertBefore(adDiv, children[i].nextSibling);
-                    } else {
-                        grid.appendChild(adDiv);
-                    }
-                    try {
-                        (adsbygoogle = window.adsbygoogle || []).push({
-                            onAdLoaded: function() {
-                                document.getElementById('inline-ad-' + (i + 1)).style.display = 'block';
-                            },
-                            onAdFailed: function() {
-                                adDiv.remove();
-                            }
-                        });
-                    } catch (e) {
-                        adDiv.remove();
-                        console.error('Ad loading error:', e);
-                    }
-                }
-            }
-        }
-    });
-</script>
