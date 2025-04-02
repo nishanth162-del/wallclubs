@@ -70,7 +70,7 @@ public class ArticleController {
                 .toList();
 
         model.addAttribute("title", article.getTitle() + " - Wallclubs");
-        model.addAttribute("description", article.getDescription());
+        //model.addAttribute("description", article.getDescription());
         model.addAttribute("article", article);
         model.addAttribute("canonical", "https://wallclubs.in/articles/" + slug);
         model.addAttribute("pageType", "article");
