@@ -9,7 +9,7 @@
                 <h3>Next Article</h3>
                 <a th:href="@{/articles/{slug}(slug=${nextArticle.slug})}" th:text="${nextArticle.title}"></a>
             </div>
-            <div class="card mb-4">
+            <!--<div class="card mb-4">
                 <div class="card-body">
                     <h3 class="mb-3">Comments</h3>
                     <ul class="list-group mb-3">
@@ -28,12 +28,8 @@
                         <button type="submit" class="btn btn-primary">Submit Comment</button>
                     </form>
                 </div>
-            </div>
+            </div>-->
         </div>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                document.getElementById('isAdBlocked').value = window.isAdBlocked || false;
-            });
-        </script>
+
     </th:block>
 </th:block>
